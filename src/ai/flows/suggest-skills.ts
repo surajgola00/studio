@@ -23,12 +23,18 @@ const SuggestSkillsInputSchema = z.object({
 });
 export type SuggestSkillsInput = z.infer<typeof SuggestSkillsInputSchema>;
 
+const SuggestionSchema = z.object({
+  name: z.string().describe('The name of the suggested skill or category.'),
+  reason: z.string().describe('A brief explanation of why this is being suggested.'),
+  slug: z.string().describe('A URL-friendly slug for the suggestion, e.g., "web-development".'),
+});
+
 const SuggestSkillsOutputSchema = z.object({
   suggestedSkills: z
-    .array(z.string())
+    .array(SuggestionSchema)
     .describe('An array of suggested skills based on the user profile and past interactions.'),
   suggestedCategories: z
-    .array(z.string())
+    .array(SuggestionSchema)
     .describe('An array of suggested categories based on the user profile and past interactions.'),
 });
 export type SuggestSkillsOutput = z.infer<typeof SuggestSkillsOutputSchema>;
@@ -47,9 +53,10 @@ const prompt = ai.definePrompt({
   Past Interactions: {{{pastInteractions}}}
 
   Based on the above information, suggest relevant skills and categories that the user might be interested in.
+  For each suggestion, provide a name, a brief reason for the suggestion, and a URL-friendly slug.
   Return the suggested skills and categories in the format specified in the output schema.
   Do not suggest skills or categories that are already present in the user profile.
-  Limit the number of suggested skills and categories to 5 each.
+  Limit the number of suggested skills and categories to 4 each.
   `,
 });
 

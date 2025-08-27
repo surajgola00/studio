@@ -5,7 +5,8 @@ import { suggestSkills, SuggestSkillsOutput } from '@/ai/flows/suggest-skills';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
 import { Badge } from './ui/badge';
-import { Sparkles, Loader2, Lightbulb } from 'lucide-react';
+import { Sparkles, Loader2, Lightbulb, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 export default function SkillSuggestion() {
   const [suggestions, setSuggestions] = useState<SuggestSkillsOutput | null>(null);
@@ -41,44 +42,52 @@ export default function SkillSuggestion() {
                 <Lightbulb className="w-6 h-6 text-primary" />
             </div>
             <div>
-                <CardTitle className="font-headline text-2xl">Discover New Skills</CardTitle>
+                <CardTitle className="font-headline text-2xl">Discover Your Next Skill</CardTitle>
                 <CardDescription>Let our AI suggest skills and categories tailored for you.</CardDescription>
             </div>
         </div>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col items-center text-center">
-            <Button onClick={handleSuggestSkills} disabled={isLoading} className="mb-6">
-            {isLoading ? (
-                <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-                </>
-            ) : (
-                <>
-                <Sparkles className="mr-2 h-4 w-4" />
-                Get AI Suggestions
-                </>
+            {!suggestions && (
+              <Button onClick={handleSuggestSkills} disabled={isLoading} className="mb-6">
+              {isLoading ? (
+                  <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                  </>
+              ) : (
+                  <>
+                  <Sparkles className="mr-2 h-4 w-4" />
+                  Get AI Suggestions
+                  </>
+              )}
+              </Button>
             )}
-            </Button>
 
             {error && <p className="text-destructive">{error}</p>}
             
             {suggestions && (
             <div className="w-full text-left grid md:grid-cols-2 gap-6 animate-in fade-in-50 duration-500">
                 <div>
-                    <h4 className="font-semibold mb-3">Suggested Skills</h4>
-                    <div className="flex flex-wrap gap-2">
+                    <h4 className="font-semibold text-lg mb-3">Suggested Skills</h4>
+                    <div className="space-y-3">
                         {suggestions.suggestedSkills.map(skill => (
-                            <Badge key={skill} variant="secondary">{skill}</Badge>
+                            <Link key={skill.slug} href={`/browse?search=${skill.slug}`} className="block p-3 rounded-md border hover:bg-muted/50 transition-colors">
+                                <h5 className="font-semibold flex items-center">{skill.name} <ArrowRight className="w-4 h-4 ml-2 text-muted-foreground"/></h5>
+                                <p className="text-sm text-muted-foreground">{skill.reason}</p>
+                            </Link>
                         ))}
                     </div>
                 </div>
                 <div>
-                    <h4 className="font-semibold mb-3">Suggested Categories</h4>
-                     <div className="flex flex-wrap gap-2">
+                    <h4 className="font-semibold text-lg mb-3">Suggested Categories</h4>
+                     <div className="space-y-3">
                         {suggestions.suggestedCategories.map(cat => (
-                            <Badge key={cat} variant="outline">{cat}</Badge>
+                            <Link key={cat.slug} href={`/browse?category=${cat.slug}`} className="block p-3 rounded-md border hover:bg-muted/50 transition-colors">
+                                <h5 className="font-semibold flex items-center">{cat.name} <ArrowRight className="w-4 h-4 ml-2 text-muted-foreground"/></h5>
+                                <p className="text-sm text-muted-foreground">{cat.reason}</p>
+                            </Link>
                         ))}
                     </div>
                 </div>

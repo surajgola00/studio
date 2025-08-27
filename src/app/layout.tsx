@@ -5,7 +5,7 @@ import Header from '@/components/header';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'SkillSwap',
+  title: 'Skill For Skill',
   description: 'Swap skills with talented people near you.',
 };
 
